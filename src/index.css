@@ -1,0 +1,245 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    @apply border-surface-700;
+  }
+
+  /* Custom scrollbar for dark mode */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-900;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-600 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-500;
+  }
+
+  /* Light mode scrollbar */
+  .light ::-webkit-scrollbar-track {
+    @apply bg-surface-100;
+  }
+
+  .light ::-webkit-scrollbar-thumb {
+    @apply bg-surface-400;
+  }
+
+  .light ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-500;
+  }
+}
+
+@layer components {
+  /* Panel styles */
+  .panel {
+    @apply bg-surface-900 border-surface-700;
+  }
+
+  .light .panel {
+    @apply bg-white border-surface-200;
+  }
+
+  /* Button variants */
+  .btn {
+    @apply inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-md transition-all duration-150;
+    @apply focus:outline-none focus:ring-2 focus:ring-accent-500 focus:ring-offset-2 focus:ring-offset-surface-900;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent-600 text-white hover:bg-accent-500 active:bg-accent-700;
+  }
+
+  .btn-secondary {
+    @apply btn bg-surface-700 text-surface-100 hover:bg-surface-600 active:bg-surface-800;
+  }
+
+  .light .btn-secondary {
+    @apply bg-surface-100 text-surface-800 hover:bg-surface-200;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent text-surface-300 hover:bg-surface-800 hover:text-surface-100 active:bg-surface-700;
+  }
+
+  .light .btn-ghost {
+    @apply text-surface-600 hover:bg-surface-100 hover:text-surface-900;
+  }
+
+  .btn-icon {
+    @apply p-2 rounded-md transition-colors duration-150;
+    @apply text-surface-400 hover:text-surface-100 hover:bg-surface-800;
+    @apply focus:outline-none focus:ring-2 focus:ring-accent-500;
+  }
+
+  .light .btn-icon {
+    @apply text-surface-500 hover:text-surface-900 hover:bg-surface-100;
+  }
+
+  /* Input styles */
+  .input {
+    @apply w-full px-3 py-2 text-sm rounded-md transition-colors duration-150;
+    @apply bg-surface-800 border border-surface-700 text-surface-100 placeholder-surface-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-accent-500 focus:border-transparent;
+  }
+
+  .light .input {
+    @apply bg-white border-surface-300 text-surface-900 placeholder-surface-400;
+  }
+
+  /* Tooltip styles */
+  .tooltip {
+    @apply absolute z-50 px-2 py-1 text-xs font-medium rounded shadow-lg;
+    @apply bg-surface-800 text-surface-100 border border-surface-700;
+    @apply animate-fade-in;
+  }
+
+  .light .tooltip {
+    @apply bg-surface-900 text-white;
+  }
+}
+
+@layer utilities {
+  /* Focus visible utilities */
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-900;
+  }
+
+  .light .focus-ring {
+    @apply focus-visible:ring-offset-white;
+  }
+
+  /* Truncate with ellipsis */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Smooth transition for panels */
+  .panel-transition {
+    @apply transition-all duration-250 ease-out;
+  }
+
+  /* Viewport container */
+  .viewport-container {
+    @apply relative w-full h-full bg-black overflow-hidden;
+  }
+
+  /* Series item hover effect */
+  .series-item {
+    @apply relative px-3 py-2 cursor-pointer transition-all duration-150;
+    @apply hover:bg-surface-800/50 border-l-2 border-transparent;
+  }
+
+  .series-item.active {
+    @apply bg-surface-800 border-l-accent-500;
+  }
+
+  .light .series-item:hover {
+    @apply hover:bg-surface-100;
+  }
+
+  .light .series-item.active {
+    @apply bg-accent-50 border-l-accent-500;
+  }
+}
+
+/* Cornerstone viewport styling */
+.cornerstone-viewport {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #000;
+}
+
+.cornerstone-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Disable text selection in viewport */
+.viewport-container,
+.cornerstone-viewport {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Loading spinner */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+/* Progress bar animation */
+@keyframes progress {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, #3b82f6 0%, #60a5fa 50%, #3b82f6 100%);
+  background-size: 200% 100%;
+  animation: progress 1.5s ease-in-out infinite;
+}
+
+/* Drop zone styling */
+.drop-zone {
+  @apply transition-all duration-200;
+}
+
+.drop-zone.active {
+  @apply border-accent-500 bg-accent-500/10;
+}
+
+/* Metadata table styling */
+.metadata-table {
+  @apply w-full text-sm;
+}
+
+.metadata-table th {
+  @apply text-left font-medium text-surface-400 py-1 pr-4 w-32;
+}
+
+.metadata-table td {
+  @apply text-surface-200 py-1 break-all;
+}
+
+.light .metadata-table th {
+  @apply text-surface-500;
+}
+
+.light .metadata-table td {
+  @apply text-surface-700;
+}

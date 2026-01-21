@@ -15,6 +15,13 @@ import {
   ScrollIcon,
 } from './Icons';
 
+/**
+ * Check if the Electron dicom API is available
+ */
+function isDicomApiAvailable(): boolean {
+  return typeof window !== 'undefined' && typeof window.dicom !== 'undefined';
+}
+
 // Simplified viewport component that creates a basic canvas for DICOM display
 export const Viewport: React.FC = () => {
   const viewportRef = useRef<HTMLDivElement>(null);
@@ -64,6 +71,12 @@ export const Viewport: React.FC = () => {
 
     const instance = instances[selectedInstanceIndex];
     if (!instance) return;
+
+    // Check if window.dicom is available before trying to read the file
+    if (!isDicomApiAvailable()) {
+      setError('DICOM file system API is not available. Please run this application in Electron.');
+      return;
+    }
 
     setIsLoading(true);
     setError(null);
@@ -249,6 +262,32 @@ export const Viewport: React.FC = () => {
     ? selectedSeries.sortedInstances
     : selectedSeries?.instances || [];
   const totalSlices = instances.length;
+
+  // Electron not available state
+  if (!isDicomApiAvailable()) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center bg-surface-950">
+        <div className="max-w-md text-center p-8">
+          <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-red-500/20 flex items-center justify-center">
+            <AlertIcon size={40} className="text-red-400" />
+          </div>
+          <h2 className="text-xl font-semibold text-surface-100 mb-2">
+            Electron Required
+          </h2>
+          <p className="text-surface-400 mb-4">
+            DICOMLite requires the Electron desktop environment to access the file system.
+            The DICOM API is not available when running in a web browser.
+          </p>
+          <p className="text-sm text-surface-500">
+            To use this application, please run it using Electron:
+          </p>
+          <code className="block mt-3 p-3 bg-surface-800 rounded text-sm text-accent-400 font-mono">
+            npm run electron:dev
+          </code>
+        </div>
+      </div>
+    );
+  }
 
   // Empty state
   if (!hasStudies && !scanProgress.isScanning) {

@@ -8,6 +8,14 @@ interface UseDicomScannerReturn {
   openFolderDialog: () => Promise<void>;
   cancelScan: () => Promise<void>;
   isScanning: boolean;
+  isElectronAvailable: boolean;
+}
+
+/**
+ * Check if the Electron dicom API is available
+ */
+function isDicomApiAvailable(): boolean {
+  return typeof window !== 'undefined' && typeof window.dicom !== 'undefined';
 }
 
 const BATCH_SIZE = 20; // Number of files to parse in each batch
@@ -26,6 +34,11 @@ export function useDicomScanner(): UseDicomScannerReturn {
   const cancelledRef = useRef(false);
 
   const scanFolder = useCallback(async (folderPath: string) => {
+    if (!isDicomApiAvailable()) {
+      setLastError('DICOM file system API is not available. Please run this application in Electron.');
+      return;
+    }
+
     cancelledRef.current = false;
     resetScanProgress();
     setScanProgress({ isScanning: true, currentPath: folderPath });
@@ -132,6 +145,11 @@ export function useDicomScanner(): UseDicomScannerReturn {
   }, [setStudies, setScanProgress, resetScanProgress, setSelectedStudy, setSelectedSeries, setLastError]);
 
   const openFolderDialog = useCallback(async () => {
+    if (!isDicomApiAvailable()) {
+      setLastError('DICOM file system API is not available. Please run this application in Electron.');
+      return;
+    }
+
     try {
       const folderPath = await window.dicom.openFolderDialog();
       if (folderPath) {
@@ -145,7 +163,9 @@ export function useDicomScanner(): UseDicomScannerReturn {
 
   const cancelScan = useCallback(async () => {
     cancelledRef.current = true;
-    await window.dicom.cancelScan();
+    if (isDicomApiAvailable()) {
+      await window.dicom.cancelScan();
+    }
     setScanProgress({ isScanning: false });
   }, [setScanProgress]);
 
@@ -154,5 +174,6 @@ export function useDicomScanner(): UseDicomScannerReturn {
     openFolderDialog,
     cancelScan,
     isScanning: scanProgress.isScanning,
+    isElectronAvailable: isDicomApiAvailable(),
   };
 }

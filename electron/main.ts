@@ -7,14 +7,14 @@ import fs from 'fs';
 
 let mainWindow: BrowserWindow | null = null;
 
-const DICOM_EXTENSIONS = ['.dcm', '.dicom', '.dic', ''];
+const DICOM_EXTENSIONS = ['.dcm', '.dicom', '.dic'];
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB limit per file
 
 function isDicomFile(filePath: string): boolean {
   const ext = path.extname(filePath).toLowerCase();
 
-  // Check extension
-  if (DICOM_EXTENSIONS.includes(ext) || ext === '') {
+  // Check extension - only process files with DICOM extensions
+  if (DICOM_EXTENSIONS.includes(ext)) {
     try {
       // Quick DICOM signature check (DICM at offset 128)
       const fd = fs.openSync(filePath, 'r');
